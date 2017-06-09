@@ -14,22 +14,30 @@ class App extends Component {  //class and const are a ES6 alternative to var, f
     constructor(props){
 
         super(props);
-        this.state = { videos: [] };
+
+        this.state = {
+            videos: [],
+            selectedVideo: null
+         };
 
 
         YTSearch({key: API_KEY, term: 'pokemon'}, (videos) => {
-            this.setState({ videos }); // ES6 videos: videos = Videos
+            this.setState({
+                videos: videos,
+                selectedVideo: videos[0]
+             }); // ES6 videos: videos = Videos
         });
-
     }
 
 
     render() {
         return (
-            <div>
+            <div className="search-bar">
             <SearchBar />
-            <VideoDetail video={this.state.videos[0]}/>
-            <VideoList   videos={this.state.videos} />
+            <VideoDetail video={this.state.selectedVideo}/>
+            <VideoList
+                onVideoSelect={selectedVideo => this.setState({selectedVideo})}
+                videos={this.state.videos} />
             </div> //JSX allows HTML inside javascript  -> transpiling
         );
     }
