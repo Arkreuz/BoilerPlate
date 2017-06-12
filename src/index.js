@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import YTSearch from 'youtube-api-search';
@@ -18,26 +19,34 @@ class App extends Component {  //class and const are a ES6 alternative to var, f
         this.state = {
             videos: [],
             selectedVideo: null
-         };
+        };
 
+        this.videoSearch("pokemon");
 
-        YTSearch({key: API_KEY, term: 'pokemon'}, (videos) => {
+    }
+
+    videoSearch(term){
+
+        YTSearch({key: API_KEY, term: term}, (videos) => {
             this.setState({
                 videos: videos,
                 selectedVideo: videos[0]
-             }); // ES6 videos: videos = Videos
+            }); // ES6 videos: videos = Videos
         });
+
+
     }
 
 
     render() {
+        const videoSearch = _.debounce((term)  => {this.videoSearch(term) }, 300 );
         return (
             <div className="search-bar">
-            <SearchBar />
-            <VideoDetail video={this.state.selectedVideo}/>
-            <VideoList
-                onVideoSelect={selectedVideo => this.setState({selectedVideo})}
-                videos={this.state.videos} />
+                <SearchBar onSearchTermChange = {videoSearch}  />
+                <VideoDetail video={this.state.selectedVideo}/>
+                <VideoList
+                    onVideoSelect={selectedVideo => this.setState({selectedVideo})}
+                    videos={this.state.videos} />
             </div> //JSX allows HTML inside javascript  -> transpiling
         );
     }
